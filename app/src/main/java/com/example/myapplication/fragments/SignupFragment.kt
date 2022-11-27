@@ -7,11 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.example.myapplication.R
-import com.example.myapplication.databinding.FragmentEmailLoginBinding
+import com.example.myapplication.databinding.FragmentSignupBinding
 import com.example.myapplication.getMyReference
 import com.example.myapplication.viewmodels.LoginMainViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -19,14 +20,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class LoginFragment : Fragment() {
+
+class SignupFragment : Fragment() {
     private val loginViewModel:LoginMainViewModel by viewModels()
-    private var bind:FragmentEmailLoginBinding?=null
+    private var bind:FragmentSignupBinding?=null
     private val binding get() = bind!!
     private lateinit var auth:FirebaseAuth
 
@@ -34,7 +31,7 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        bind = FragmentEmailLoginBinding.inflate(inflater,container,false)
+        bind = FragmentSignupBinding.inflate(inflater,container,false)
         return binding.root
     }
 
@@ -48,14 +45,13 @@ class LoginFragment : Fragment() {
         auth = Firebase.auth
         val usernameEditText = binding.username
         val passwordEditText = binding.password
-        val loginButton = binding.login
+        val signupButton = binding.signUp
 
 
-        val afterTextChangedListener = object : TextWatcher{
-
+        val afterTextChangeListener = object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
+            override fun afterTextChanged(s: Editable?) {
                 loginViewModel.loginDataChanged(
                     usernameEditText.text.toString(),
                     passwordEditText.text.toString()
@@ -63,11 +59,11 @@ class LoginFragment : Fragment() {
             }
         }
 
-        usernameEditText.addTextChangedListener(afterTextChangedListener)
-        passwordEditText.addTextChangedListener(afterTextChangedListener)
+        usernameEditText.addTextChangedListener(afterTextChangeListener)
+        passwordEditText.addTextChangedListener(afterTextChangeListener)
         loginViewModel.loginFormState.observe(viewLifecycleOwner,
-        Observer { loginFormState->
-            loginButton.isEnabled =loginFormState.DataValidation
+        Observer { loginFormState ->
+            signupButton.isEnabled=loginFormState.DataValidation
             loginFormState.usernameError?.let {
                 usernameEditText.error = getString(it)
             }
@@ -75,34 +71,27 @@ class LoginFragment : Fragment() {
                 passwordEditText.error = getString(it)
             }
         })
-        loginButton.setOnClickListener {
-            auth.signInWithEmailAndPassword(
+
+        signupButton.setOnClickListener {
+            auth.createUserWithEmailAndPassword(
                 usernameEditText.text.toString(),
                 passwordEditText.text.toString()
             ).addOnCompleteListener{
                 if(it.isSuccessful){
-                    getMyReference()?.get()?.addOnCompleteListener{
-                        if (it.result.exists()){
-                            activity?.finish()
-                        }else{
-                            view.findNavController()
-                                .navigate(R.id.action_emailLoginFragment_to_setNickNameFragment)
-                        }
-                    }
+                    val doc = getMyReference()?.get()?.isSuccessful
+                    if(doc==false)
+                        view?.findNavController()
+                            ?.navigate(R.id.action_emailLoginFragment_to_setNickNameFragment)
                 }else{
                     val activity = activity
-                    if(activity!=null)
+                    if (activity!=null)
                         Snackbar.make(
                             activity.findViewById(android.R.id.content),
-                            "failed to log in.${it.exception.toString()}",
+                            "Failed to sign in${it.exception.toString()}",
                             Snackbar.LENGTH_SHORT
                         ).show()
                 }
             }
-        }
-        binding.signUp.setOnClickListener{
-            view.findNavController()
-                .navigate(R.id.action_emailLoginFragment_to_emailSignUpFragment)
         }
     }
 }
