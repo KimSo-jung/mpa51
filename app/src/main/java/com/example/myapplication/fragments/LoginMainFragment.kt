@@ -37,7 +37,7 @@ class LoginMainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.loginStartbyEmailButton.setOnclickListener{
+        binding.loginStartByEmail.setOnClickListener{
             view?.findNavController()?.navigate(R.id.action_loginMainFragment_to_emailLoginFragment)
         }
     }

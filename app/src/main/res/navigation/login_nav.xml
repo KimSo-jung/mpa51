@@ -11,9 +11,6 @@
         <action
             android:id="@+id/action_loginMainFragment_to_emailLoginFragment"
             app:destination="@id/emailLoginFragment"/>
-        <action
-            android:id="@+id/action_loginMainFragment_to_setNickNameFragment"
-            app:destination="@id/setNickNameFragment" />
     </fragment>
     <fragment
         android:id="@+id/emailLoginFragment"
@@ -21,21 +18,8 @@
         tools:layout="@layout/fragment_email_login">
         <action
             android:id="@+id/action_emailLoginFragment_to_emailSignUpFragment"
-            app:destination="@id/emailSignUpFragment" />
-        <action
-            android:id="@+id/action_emailLoginFragment_to_setNickNameFragment"
-            app:destination="@id/setNickNameFragment" />
+            app:destination="@id/emailLoginFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/setNickNameFragment"
-        android:label="fragment_set_nickname"
-        tools:layout="@layout/fragment_auth_set_nickname">
-        <action
-            android:id="@+id/action_setNickNameFragment_to_setBirthdayFragment"
-            app:destination="@id/setBirthdayFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/setBirthdayFragment"
-        android:label="fragment_setbday" />
+
 
 </navigation>

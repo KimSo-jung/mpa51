@@ -11,7 +11,7 @@ import com.example.myapplication.nicknameUsable
 class LoginMainViewModel : ViewModel() {
     private val ID_ = MutableLiveData<String>("")
     private val pw = MutableLiveData<String>("")
-    val id = LiveData<String> = ID_
+    val id : LiveData<String> = ID_
     val password: LiveData<String> = pw
 
     private val loginFormats = MutableLiveData<LoginFormState>()

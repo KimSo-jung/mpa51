@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         appbarc = AppBarConfiguration(
             setOf(
                 R.id.profileFragment,
-                R.id.friendFragment,
+                R.id.
                 R.id.postFragment
             )
         )
